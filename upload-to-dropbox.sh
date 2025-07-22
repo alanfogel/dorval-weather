@@ -41,11 +41,8 @@ done
 
 # Upload error log if it exists and has content
 if [ -s "$LOG_FILE" ]; then
-    if "$UPLOADER" upload "$LOG_FILE" "$DROPBOX_DIR"; then
-        # Optional: Clear log after successful upload
-        > "$LOG_FILE"
-    else
-        # If upload fails, keep the error but log this failure too
+    if ! "$UPLOADER" upload "$LOG_FILE" "$DROPBOX_DIR"; then
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] Failed to upload error log" >> "$LOG_FILE"
     fi
+    # Keep the existing log file intact (don't clear it)
 fi
