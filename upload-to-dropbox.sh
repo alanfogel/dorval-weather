@@ -6,11 +6,12 @@
 # Configuration
 WEATHER_DIR=~/dorval-weather/weather_data
 DROPBOX_DIR="/Dorval-Weather/"
+LOG_DIR=~/dorval-weather/weather_logs
 LOG_FILE=~/dorval-weather/weather_logs/upload_errors.txt
 UPLOADER=~/dorval-weather/Dropbox-Uploader/dropbox_uploader.sh
 
 # Ensure directories exist
-mkdir -p ~/dorval-weather/weather_logs
+mkdir -p "$LOG_DIR"
 
 # Get yesterday's date in YYYY-MM-DD format
 YESTERDAY=$(date -d "yesterday" '+%Y-%m-%d')
@@ -37,3 +38,14 @@ for csv_file in "$WEATHER_DIR"/Dorval_Weather_*.csv; do
         fi
     fi
 done
+
+# Upload error log if it exists and has content
+if [ -s "$LOG_FILE" ]; then
+    if "$UPLOADER" upload "$LOG_FILE" "$DROPBOX_DIR"; then
+        # Optional: Clear log after successful upload
+        > "$LOG_FILE"
+    else
+        # If upload fails, keep the error but log this failure too
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] Failed to upload error log" >> "$LOG_FILE"
+    fi
+fi
