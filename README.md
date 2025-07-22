@@ -1,13 +1,21 @@
-# 🌲 Dendro-Pi Monitoring System
+# 🌲 Raspberry Pi BME280 Sensor Setup Guide
 
-This project sets up a Raspberry Pi to monitor dendrometers and take periodic images, then uploads data to Dropbox for long-term analysis at research sites.
+This guide walks you through setting up a Raspberry Pi from scratch and configuring a BME280 temperature, humidity, and pressure sensor using I2C communication.
 
 My other projects that build on this initial setup:
+- [Dendro-Pi-Main](https://github.com/alanfogel/dendro-pi-main)
 - [Charge Controller](https://github.com/alanfogel/ChargeController)
 - Dendrometer Logger - *Under construction...*
 
-The default behaviour of this system is to take a picture at 9:00 AM, 12:00 PM, 3:00 PM, and 6:00 PM every day, and upload the pictures each night to a Dropbox folder named after the Pi's hostname (e.g., `Dorval-8`).
+The default behaviour of this system is to take measurements from the BME280 sensor every 5 minutes every day, and upload the data each night to a Dropbox folder.
 
+## Prerequisites
+- Raspberry Pi (any model with 40-pin GPIO header recommended)
+- MicroSD card 
+- BME280 sensor module
+- Jumper wires (female-to-female)
+- Computer with SD card reader
+- Internet connection
 ---
 
 ## ⚙️ Initial Setup: Flashing the Pi SD Card
@@ -19,7 +27,7 @@ The default behaviour of this system is to take a picture at 9:00 AM, 12:00 PM, 
    - **OS**: Raspberry Pi OS 32-bit (Bookworm)
    - **Storage**: Select Storage (Mass Storage Device USB Device)
    ### - Edit settings
-   - **Hostname**: e.g., `Dorval-8`
+   - **Hostname**: e.g., `Dorval-Weather`
    - **Username/Password** (To log into the Pi): `madlab` / `______`
    - **Wi-Fi SSID/Password**: `new_aspen_2022` / `___________`
    - **Country**: CA
@@ -36,11 +44,11 @@ The default behaviour of this system is to take a picture at 9:00 AM, 12:00 PM, 
 1. Connect your laptop to the same Wi-Fi as the Pi.
 2. Open terminal (or PowerShell) and SSH into your Pi:
    ```bash
-   ssh madlab@Dorval-8.local # ssh username@{hostname}.local
+   ssh madlab@Dorval-Weather.local # ssh username@{hostname}.local
    ```
    if cannot resolve the hostname, use the IP address:
    ```bash
-   nslookup Dorval-8.local # to find the IP address
+   nslookup Dorval-Weather.local # to find the IP address
    ssh madlab@{IP_ADDRESS} # ssh username@{IP_ADDRESS}
    ```
 3. Run:
@@ -48,38 +56,38 @@ The default behaviour of this system is to take a picture at 9:00 AM, 12:00 PM, 
     sudo raspi-config
     ```
     - Set timezone under Localization Options
+    - Enable I2C (Interface Options → I2C → Yes)
     - Reboot the Pi
-4. After reboot, SSH in again and test the camera:
-   ```bash
-   rpicam-jpeg -o test.jpg
-   ```
-   - If not found, install:
-   ```bash
-    sudo apt-get update
-    sudo apt-get install python-picamera2 python3-picamera2
-   ``` 
+4. Connect the BME280 sensor to your Raspberry Pi:
+- BME280 Pin	Raspberry Pi Pin
+- VCC/VIN	3.3V (Pin 1)
+- GND	Ground (Pin 6)
+- SCL	GPIO 3 (SCL, Pin 5)
+- SDA	GPIO 2 (SDA, Pin 3)
+
+*Note: Some BME280 modules use 5V for VCC - check your specific module's requirements.*
 
 ## 📦 Installing dendro-pi Scripts
 
 1. Clone the project:
-````bash
-git clone https://github.com/alanfogel/dendro-pi-main.git
-cd dendro-pi-main
-````
-2. Enter test folder and try:
 ```bash
-cd test
-python test_camera.py
+git clone https://github.com/alanfogel/dorval-weather.git
+cd dorval-weather
 ```
-3. Edit your camera name in main/dendro_pictures.py on this line: ```CAMERA_NAME = "DorvalTest"```
-- (Replace `Dorval-8_` with your camera name):
+2. Update your system:
 ```bash
-cd ..
-nano main/dendro_pictures.py
+sudo apt update && sudo apt upgrade -y
 ```
-```python
-CAMERA_NAME = "Dorval-8_" # the trailing underscore is important for namining the files
+3. Install required packages:
+```bash
+sudo apt install -y python3-pip i2c-tools
+sudo pip3 install smbus2 bme280
 ```
+4. Verify I2C detection:
+```bash
+sudo i2cdetect -y 1
+```
+You should see a device listed (typically 0x76 or 0x77)
 
 ## ☁️ Configure Dropbox Upload
 
@@ -102,9 +110,9 @@ sudo chmod +x dropbox_uploader.sh
 cd ..
 nano upload-to-dropbox.sh
 ```
-Modify the variable declaration line (Replace `Dorval-8` with your Dropbox folder name):
+Modify the variable declaration line (Replace `Dorval-Weather` with your Dropbox folder name):
 ```bash
-DROPBOX_PATH="/Dorval-8/"
+DROPBOX_PATH="/Dorval-Weather/"
 ```
 
 3. Ensure UNIX line endings:
@@ -151,14 +159,3 @@ cd ..
 bash upload-to-dropbox.sh
 ```
 - Check Dropbox for uploaded files.
-
-
-## 📁 Copying Pictures from Pi to PC
-
-From your Windows machine:
-
-```powershell
-scp -r madlab@Dorval8.local:~/dendro-pi-main/pictures C:\Users\alanj\Desktop
-```
-- Replace `Dorval8.local` with your Pi's hostname.
-- Replace `C:\Users\alanj\Desktop` with your desired local directory.

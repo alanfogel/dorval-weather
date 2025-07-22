@@ -3,7 +3,7 @@
 PICTURES_DIR=~/dendro-pi-main/pictures
 LOG_FILE=~/dendro-pi-main/logs/error_log.txt
 UPLOAD_LOG=~/dendro-pi-main/logs/upload_error_log.txt
-DROPBOX_PATH="/Dorval-8/"
+DROPBOX_PATH="/Dorval-Weather/"
 
 # --- Upload pictures ---
 cd ~/dendro-pi-main/Dropbox-Uploader
