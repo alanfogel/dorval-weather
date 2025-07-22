@@ -142,7 +142,7 @@ crontab -l
 ```bash
 crontab -r
 ```
-4. Install scheduled jobs: **TODO: FIX ADD_CRON.sh**
+4. Install scheduled jobs:
 ```bash
 sh add_cron.sh
 ```
@@ -157,12 +157,13 @@ crontab -e
 
 ## ✅ Test Setup
 ```bash
-# Take a picture
-cd main
-python dendro_pictures.py
+# Take a Measurement
+/home/madlab/dorval-weather/venv/bin/python /home/madlab/dorval-weather/weather_station.py
+```
 
-# Upload pictures
+```bash
+# Upload .csv to dropbox
 cd ..
-bash upload-to-dropbox.sh
+bash /home/madlab/dorval-weather/upload-to-dropbox.sh
 ```
 - Check Dropbox for uploaded files.
