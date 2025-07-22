@@ -4,13 +4,13 @@
 # ------------------------------------------------------------
 
 # Configuration
-WEATHER_DIR=~/weather_data
+WEATHER_DIR=~/dorval-weather/weather_data
 DROPBOX_DIR="/Dorval-Weather/"
-LOG_FILE=~/weather_logs/upload_errors.txt
-UPLOADER=~/Dropbox-Uploader/dropbox_uploader.sh
+LOG_FILE=~/dorval-weather/weather_logs/upload_errors.txt
+UPLOADER=~/dorval-weather/Dropbox-Uploader/dropbox_uploader.sh
 
 # Ensure directories exist
-mkdir -p ~/weather_logs
+mkdir -p ~/dorval-weather/weather_logs
 
 # Get yesterday's date in YYYY-MM-DD format
 YESTERDAY=$(date -d "yesterday" '+%Y-%m-%d')
