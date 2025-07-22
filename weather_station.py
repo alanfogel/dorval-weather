@@ -4,19 +4,22 @@ import time
 from datetime import datetime
 import csv
 import os
+from pathlib import Path
+
+# Use absolute path with home directory expansion
+LOG_DIR = os.path.expanduser("~/dorval-weather/weather_data")
 
 # Sensor configuration
 SENSOR_ADDRESS = 0x77
-LOG_DIR = "weather_data"
 
 class BME280Logger:
     def __init__(self):
         self.bus = smbus2.SMBus(1)
         self.calibration_params = bme280.load_calibration_params(
             self.bus, SENSOR_ADDRESS)
-        
+
         # Create log directory if it doesn't exist
-        os.makedirs(LOG_DIR, exist_ok=True)
+        Path(LOG_DIR).mkdir(parents=True, exist_ok=True)
 
     def get_sensor_data(self):
         data = bme280.sample(self.bus, SENSOR_ADDRESS, self.calibration_params)
