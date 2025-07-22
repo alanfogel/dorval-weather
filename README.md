@@ -78,20 +78,27 @@ cd dorval-weather
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
-3. Install required packages:
+3. Create & Activate virtual environment:
+```
+python3 -m venv venv
+```
 ```bash
-sudo apt install -y python3-pip i2c-tools
-sudo pip3 install smbus2 bme280
+source venv/bin/activate
+```
+4. Install required packages:
+```bash
+pip3 install -r requirements.txt
 ```
 4. Verify I2C detection:
 ```bash
 sudo i2cdetect -y 1
 ```
 You should see a device listed (typically 0x76 or 0x77)
+If its different than 0x77 you'll need to edit ```weather_station.py``` to match.
 
 ## ☁️ Configure Dropbox Upload
 
-1. In the root project directory ```~/dendro-pi-main/```:
+1. In the root project directory ```~/dorval-weather/```:
 ```bash
 git clone https://github.com/alanfogel/Dropbox-Uploader.git
 cd Dropbox-Uploader
