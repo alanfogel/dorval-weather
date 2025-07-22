@@ -3,11 +3,11 @@
 crontab -l 2>/dev/null > temp_cron || true
 
 cat <<EOF >> temp_cron
-# Take a picture every hour
-*/15 * * * * /usr/bin/python3 /home/madlab/dorval-weather/weather_station.py
+# Take a weather measurement every 5 minutes
+*/5 * * * * /usr/bin/python3 /home/madlab/dorval-weather/weather_station.py
 
-# Upload pictures to Dropbox once per day at 3am
-0 3 * * * bash /home/madlab/dorval-weather/upload-to-dropbox.sh
+# Upload weather measurements to dropbox every 30 minutes.
+*/30 * * * * bash /home/madlab/dorval-weather/upload-to-dropbox.sh
 EOF
 
 crontab temp_cron
