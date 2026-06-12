@@ -2,7 +2,7 @@
 
 This guide walks you through setting up a Raspberry Pi from scratch and configuring a BME280 temperature, humidity, and pressure sensor using I2C communication.
 
-My other projects that build on this initial setup:
+My other projects involving Raspberry Pi's:
 - [Dendro-Pi-Main](https://github.com/alanfogel/dendro-pi-main)
 - [Charge Controller](https://github.com/alanfogel/ChargeController)
 - [Dendrometer Logger](https://github.com/alanfogel/dendro-logger)
