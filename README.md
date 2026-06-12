@@ -5,7 +5,7 @@ This guide walks you through setting up a Raspberry Pi from scratch and configur
 My other projects that build on this initial setup:
 - [Dendro-Pi-Main](https://github.com/alanfogel/dendro-pi-main)
 - [Charge Controller](https://github.com/alanfogel/ChargeController)
-- Dendrometer Logger - *Under construction...*
+- [Dendrometer Logger](https://github.com/alanfogel/dendro-logger)
 
 The default behaviour of this system is to take measurements from the BME280 sensor every 5 minutes every day, and upload the data each night to a Dropbox folder.
 
